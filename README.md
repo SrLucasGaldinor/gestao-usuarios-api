@@ -70,7 +70,7 @@ A aplicação sobe em `http://localhost:8080`. O H2 Console fica disponível em 
 | GET | /users/{id} | Buscar usuário por ID | Sim | ⬜ |
 | GET | /users/me | Buscar usuário autenticado | Sim | ⬜ |
 | PUT | /users/{id} | Atualizar usuário | Sim | ⬜ |
-| DELETE | /users/{id} | Deletar usuário | Sim | ⬜ |
+| DELETE | /users/{id} | Desativar usuário (soft delete) | Sim | ⬜ |
 
 ## Exemplos de requisição
 
@@ -107,7 +107,7 @@ Conforme cada componente é commitado, a documentação técnica correspondente 
 
 Entidade central da aplicação, mapeada via JPA para a tabela `users` no banco de dados. Usa Lombok (`@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor`) para eliminar código repetitivo de getters, setters e construtores.
 
-Campos: `id` (chave primária, auto increment), `nome`, `email` (único), `senha`, `role` (padrão `USER`).
+Campos: `id` (chave primária, auto increment), `nome`, `email` (único), `senha`, `role` (padrão `USER`), `ativo` (padrão `true`, usado para soft delete).
 
 ### UserRepository (Repository)
 
@@ -115,11 +115,12 @@ Interface que estende `JpaRepository<User, Long>`, herdando automaticamente oper
 de CRUD (`save`, `findById`, `findAll`, `deleteById`, entre outras) sem necessidade de 
 implementação manual.
 
-Dois métodos customizados usam Query Derivation, mecanismo do Spring Data JPA que gera 
+Três métodos customizados usam Query Derivation, mecanismo do Spring Data JPA que gera 
 a query JPQL a partir do nome do método:
 
-- `findByEmail(String email)`: retorna `Optional<User>`, usado na autenticação
+- `findByEmail(String email)`: retorna `Optional<User>`, usado na autenticação (sem filtro de status, necessário para o Spring Security identificar contas desativadas)
 - `existsByEmail(String email)`: retorna `boolean`, usado para validar duplicidade no cadastro
+- `findByAtivoTrue()`: retorna `List<User>`, usado na listagem geral para ocultar usuários desativados
 
 Essa camada isola todo o acesso a dados do restante da aplicação, seguindo o padrão 
 Repository. O `UserService` nunca interage diretamente com o banco, apenas com essa interface.

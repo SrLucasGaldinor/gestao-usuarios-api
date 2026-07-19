@@ -35,4 +35,8 @@ public class User {
     @Builder.Default
     @Column(nullable = false)
     private String role = "USER";
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean ativo = true;
 }
