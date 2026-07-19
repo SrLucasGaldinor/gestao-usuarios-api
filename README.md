@@ -29,7 +29,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 |---|---|---|
 | Model | `User` | ✅ Commitado |
 | Repository | `UserRepository` | ✅ Commitado |
-| DTO | `RegisterRequest`, `LoginRequest`, `UpdateRequest`, `AuthResponse`, `UserResponse` | ⬜ Não iniciado |
+| DTO | `RegisterRequest`, `LoginRequest`, `UpdateRequest`, `AuthResponse`, `UserResponse` | ✅ Commitado |
 | Security | `JwtUtil` | ⬜ Não iniciado |
 | Security | `UserDetailsServiceImpl` | ⬜ Não iniciado |
 | Security | `JwtAuthenticationFilter` | ⬜ Não iniciado |
@@ -124,6 +124,25 @@ a query JPQL a partir do nome do método:
 
 Essa camada isola todo o acesso a dados do restante da aplicação, seguindo o padrão 
 Repository. O `UserService` nunca interage diretamente com o banco, apenas com essa interface.
+
+### DTOs (Data Transfer Objects)
+
+Camada de tradução entre a API e o banco de dados, evitando expor a entidade `User` 
+diretamente (especialmente o campo `senha`).
+
+**DTOs de entrada (Request), validados com Bean Validation:**
+- `RegisterRequest`: nome, email, senha (`@NotBlank`, `@Email`, `@Size(min = 6)`)
+- `LoginRequest`: email, senha (`@NotBlank`, `@Email`)
+- `UpdateRequest`: nome (`@NotBlank`)
+
+**DTOs de saída (Response):**
+- `AuthResponse`: token JWT retornado após login bem-sucedido
+- `UserResponse`: dados seguros do usuário (sem senha), com método estático `fromEntity()` 
+para conversão a partir da entidade `User`
+
+A validação só é aplicada quando o parâmetro do controller usa `@Valid`. Se alguma regra 
+falhar, o Spring retorna automaticamente `400 Bad Request` com a mensagem definida em 
+cada anotação.
 
 ---
 
