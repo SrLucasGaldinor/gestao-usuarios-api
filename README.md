@@ -28,7 +28,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | Camada | Componente | Status |
 |---|---|---|
 | Model | `User` | ✅ Commitado |
-| Repository | `UserRepository` | ⬜ Não iniciado |
+| Repository | `UserRepository` | ✅ Commitado |
 | DTO | `RegisterRequest`, `LoginRequest`, `UpdateRequest`, `AuthResponse`, `UserResponse` | ⬜ Não iniciado |
 | Security | `JwtUtil` | ⬜ Não iniciado |
 | Security | `UserDetailsServiceImpl` | ⬜ Não iniciado |
@@ -108,6 +108,21 @@ Conforme cada componente é commitado, a documentação técnica correspondente 
 Entidade central da aplicação, mapeada via JPA para a tabela `users` no banco de dados. Usa Lombok (`@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor`) para eliminar código repetitivo de getters, setters e construtores.
 
 Campos: `id` (chave primária, auto increment), `nome`, `email` (único), `senha`, `role` (padrão `USER`).
+
+### UserRepository (Repository)
+
+Interface que estende `JpaRepository<User, Long>`, herdando automaticamente operações 
+de CRUD (`save`, `findById`, `findAll`, `deleteById`, entre outras) sem necessidade de 
+implementação manual.
+
+Dois métodos customizados usam Query Derivation, mecanismo do Spring Data JPA que gera 
+a query JPQL a partir do nome do método:
+
+- `findByEmail(String email)`: retorna `Optional<User>`, usado na autenticação
+- `existsByEmail(String email)`: retorna `boolean`, usado para validar duplicidade no cadastro
+
+Essa camada isola todo o acesso a dados do restante da aplicação, seguindo o padrão 
+Repository. O `UserService` nunca interage diretamente com o banco, apenas com essa interface.
 
 ---
 
