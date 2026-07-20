@@ -23,3 +23,15 @@
 hs_err_pid*
 replay_pid*
 .env
+
+HELP.md
+target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
