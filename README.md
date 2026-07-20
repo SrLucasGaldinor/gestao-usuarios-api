@@ -30,7 +30,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | Model | `User` | ✅ Commitado |
 | Repository | `UserRepository` | ✅ Commitado |
 | DTO | `RegisterRequest`, `LoginRequest`, `UpdateRequest`, `AuthResponse`, `UserResponse` | ✅ Commitado |
-| Security | `JwtUtil` | ⬜ Não iniciado |
+| Security | `JwtUtil` | ✅ Commitado |
 | Security | `UserDetailsServiceImpl` | ⬜ Não iniciado |
 | Security | `JwtAuthenticationFilter` | ⬜ Não iniciado |
 | Security | `SecurityConfig` | ⬜ Não iniciado |
@@ -143,6 +143,26 @@ para conversão a partir da entidade `User`
 A validação só é aplicada quando o parâmetro do controller usa `@Valid`. Se alguma regra 
 falhar, o Spring retorna automaticamente `400 Bad Request` com a mensagem definida em 
 cada anotação.
+
+### JwtUtil (Security)
+
+Classe responsável por gerar e validar tokens JWT (JSON Web Token), usados para 
+autenticação stateless da API.
+
+**Geração:** `generateToken(UserDetails)` monta um token contendo o email do usuário 
+(subject), data de emissão e data de expiração (24 horas), assinado com o algoritmo 
+HMAC-SHA usando uma chave secreta.
+
+**Validação:** `isTokenValid(String, UserDetails)` confirma que o token pertence ao 
+usuário correto e ainda não expirou.
+
+**Extração de dados:** usa programação funcional (`Function<Claims, T>`) para reutilizar 
+a lógica de decodificação do token entre os métodos `extractUsername` e `extractExpiration`.
+
+**Segurança do segredo:** o `jwt.secret` é lido de uma variável de ambiente 
+(`${JWT_SECRET:valor_padrao}`), nunca commitado em texto puro. Um arquivo `.env.example` 
+documenta o formato esperado, sem expor o valor real. O `.gitignore` impede que um 
+eventual `.env` real seja commitado.
 
 ---
 
