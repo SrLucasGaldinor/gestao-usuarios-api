@@ -32,7 +32,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | DTO | `RegisterRequest`, `LoginRequest`, `UpdateRequest`, `AuthResponse`, `UserResponse` | ✅ Commitado |
 | Security | `JwtUtil` | ✅ Commitado |
 | Security | `UserDetailsServiceImpl` | ✅ Commitado |
-| Security | `JwtAuthenticationFilter` | ⬜ Não iniciado |
+| Security | `JwtAuthenticationFilter` | ✅ Commitado |
 | Security | `SecurityConfig` | ⬜ Não iniciado |
 | Service | `UserService` | ⬜ Não iniciado |
 | Controller | `AuthController` | ⬜ Não iniciado |
@@ -186,6 +186,33 @@ qualquer tentativa de login para essa conta
 Essa camada de desacoplamento permite que o Spring Security funcione sem conhecer a 
 estrutura real da nossa entidade `User`, enxergando apenas o mínimo necessário para 
 autenticação e autorização.
+
+### JwtAuthenticationFilter (Security)
+
+Filtro que intercepta toda requisição HTTP antes dela chegar ao controller, executando 
+exatamente uma vez por requisição (`OncePerRequestFilter`). Responsável por verificar 
+se a requisição trouxe um token JWT válido e, se sim, registrar essa requisição como 
+autenticada para o restante da aplicação.
+
+**Fluxo:**
+1. Verifica o cabeçalho `Authorization`. Sem token no formato `Bearer`, deixa a 
+requisição seguir sem tentar autenticar (rotas públicas passam despreocupadas)
+2. Extrai o email do token (delega para `JwtUtil`)
+3. Busca o usuário atual no banco (delega para `UserDetailsServiceImpl`)
+4. Confirma que o token pertence a esse usuário e não expirou (`JwtUtil` novamente)
+5. Se válido, registra a autenticação no `SecurityContextHolder`, usando 
+`UsernamePasswordAuthenticationToken` já com `authenticated = true` (a validação já 
+ocorreu via assinatura do JWT, não é necessário passar por um `AuthenticationProvider` 
+novamente)
+6. Sempre deixa a requisição continuar, independente do resultado
+
+**Tratamento de exceção:** tokens malformados ou corrompidos (`JwtException`) são 
+capturados e registrados via log (SLF4J), sem interromper a requisição. O comportamento 
+nesse caso é idêntico a "nenhum token presente", deixando a decisão de bloqueio para 
+o `SecurityConfig`.
+
+**Importante:** esse filtro não decide se uma rota exige autenticação, essa 
+responsabilidade é do `SecurityConfig`. Ele só orquestra a validação e publica o resultado.
 
 ---
 
