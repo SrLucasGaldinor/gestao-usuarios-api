@@ -31,7 +31,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | Repository | `UserRepository` | ✅ Commitado |
 | DTO | `RegisterRequest`, `LoginRequest`, `UpdateRequest`, `AuthResponse`, `UserResponse` | ✅ Commitado |
 | Security | `JwtUtil` | ✅ Commitado |
-| Security | `UserDetailsServiceImpl` | ⬜ Não iniciado |
+| Security | `UserDetailsServiceImpl` | ✅ Commitado |
 | Security | `JwtAuthenticationFilter` | ⬜ Não iniciado |
 | Security | `SecurityConfig` | ⬜ Não iniciado |
 | Service | `UserService` | ⬜ Não iniciado |
