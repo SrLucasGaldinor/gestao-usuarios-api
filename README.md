@@ -164,6 +164,29 @@ a lógica de decodificação do token entre os métodos `extractUsername` e `ext
 documenta o formato esperado, sem expor o valor real. O `.gitignore` impede que um 
 eventual `.env` real seja commitado.
 
+### UserDetailsServiceImpl (Security)
+
+Implementa a interface `UserDetailsService` do Spring Security, funcionando como 
+tradutor entre a entidade `User` (nossa, específica da aplicação) e a interface 
+`UserDetails` (genérica, usada pelo Spring Security).
+
+O método `loadUserByUsername(String email)` é chamado automaticamente pelo Spring 
+Security sempre que uma autenticação é necessária (tanto no login quanto na validação 
+de tokens JWT em requisições). Ele busca o usuário no `UserRepository` por email e 
+monta um `UserDetails` com:
+
+- **username**: o email do usuário
+- **password**: a senha armazenada no banco (a criptografia dessa senha será detalhada 
+quando o `UserService` for documentado)
+- **authorities**: permissões no formato `ROLE_<role>`, exigido pelo Spring Security
+- **disabled**: reflete o campo `ativo` do usuário. Quando um usuário é desativado 
+(soft delete), esse campo passa a `true`, e o Spring Security bloqueia automaticamente 
+qualquer tentativa de login para essa conta
+
+Essa camada de desacoplamento permite que o Spring Security funcione sem conhecer a 
+estrutura real da nossa entidade `User`, enxergando apenas o mínimo necessário para 
+autenticação e autorização.
+
 ---
 
 ## Migração para PostgreSQL
