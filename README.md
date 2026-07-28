@@ -176,8 +176,8 @@ de tokens JWT em requisições). Ele busca o usuário no `UserRepository` por em
 monta um `UserDetails` com:
 
 - **username**: o email do usuário
-- **password**: a senha armazenada no banco (a criptografia dessa senha será detalhada 
-quando o `UserService` for documentado)
+- **password**: a senha armazenada no banco, já em formato hash BCrypt (ver detalhes 
+de criptografia na seção `UserService`)
 - **authorities**: permissões no formato `ROLE_<role>`, exigido pelo Spring Security
 - **disabled**: reflete o campo `ativo` do usuário. Quando um usuário é desativado 
 (soft delete), esse campo passa a `true`, e o Spring Security bloqueia automaticamente 
