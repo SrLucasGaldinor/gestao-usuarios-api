@@ -34,7 +34,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | Security | `UserDetailsServiceImpl` | ✅ Commitado |
 | Security | `JwtAuthenticationFilter` | ✅ Commitado |
 | Security | `SecurityConfig` | ✅ Commitado |
-| Service | `UserService` | ⬜ Não iniciado |
+| Service | `UserService` | ✅ Commitado |
 | Controller | `AuthController` | ⬜ Não iniciado |
 | Controller | `UserController` | ⬜ Não iniciado |
 
@@ -240,6 +240,29 @@ por conta própria via token, sem o servidor guardar memória de autenticações
 - Frame options desabilitado (necessário para o H2 Console funcionar em desenvolvimento)
 - `JwtAuthenticationFilter` registrado via `addFilterBefore`, executando antes do filtro 
 padrão de autenticação do Spring Security
+
+### UserService (Service)
+
+Camada de regras de negócio, separando a lógica da aplicação do acesso a dados 
+(`Repository`) e do recebimento de requisições HTTP (`Controller`).
+
+**`register(RegisterRequest)`:** valida duplicidade de email (`409 CONFLICT` se já 
+existir) e criptografa a senha com BCrypt (`passwordEncoder.encode()`) antes de salvar. 
+A partir desse ponto, a senha em texto puro nunca mais existe na aplicação, apenas o 
+hash irreversível.
+
+**`findAll()`:** usa `findByAtivoTrue()`, respeitando o soft delete — usuários 
+desativados não aparecem na listagem geral.
+
+**`findById(Long)` / `findByEmail(String)`:** localizam um usuário pelo ID ou pelo 
+e-mail. São usados tanto em consultas administrativas quanto pelo `UserDetailsServiceImpl` 
+durante o processo de login.
+
+**`update(Long, UpdateRequest)`:** atualiza o nome do usuário correspondente ao ID 
+informado.
+
+**`deleteById(Long)`:** realiza a exclusão lógica do usuário (soft delete), sem remover 
+o registro do banco de dados.
 
 ---
 
