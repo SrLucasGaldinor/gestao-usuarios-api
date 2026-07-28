@@ -35,7 +35,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | Security | `JwtAuthenticationFilter` | ✅ Commitado |
 | Security | `SecurityConfig` | ✅ Commitado |
 | Service | `UserService` | ✅ Commitado |
-| Controller | `AuthController` | ⬜ Não iniciado |
+| Controller | `AuthController` | ✅ Commitado |
 | Controller | `UserController` | ⬜ Não iniciado |
 
 ---
@@ -263,6 +263,28 @@ informado.
 
 **`deleteById(Long)`:** realiza a exclusão lógica do usuário (soft delete), sem remover 
 o registro do banco de dados.
+
+### AuthController (Controller)
+
+Camada que recebe as requisições HTTP de autenticação e devolve as respostas 
+correspondentes, delegando toda a lógica para `UserService`, `AuthenticationManager` 
+e `JwtUtil`.
+
+**`POST /auth/register`:** valida os dados de entrada (`@Valid`) e delega o cadastro 
+para `UserService.register()`. Retorna `201 Created` com os dados do usuário.
+
+**`POST /auth/login`:** autentica via `AuthenticationManager`, que dispara a cadeia 
+`DaoAuthenticationProvider` → `UserDetailsServiceImpl` → `PasswordEncoder`. Dois 
+cenários de falha são tratados separadamente:
+
+- `BadCredentialsException` → `401 Unauthorized`, com mensagem genérica ("Email ou 
+senha inválidos"), sem especificar qual dos dois está incorreto, evitando ataques de 
+enumeração de usuários
+- `DisabledException` → `403 Forbidden`, com mensagem específica ("Esta conta está 
+desativada"), já que não há risco de segurança em revelar essa informação
+
+Em caso de sucesso, extrai o `UserDetails` autenticado e gera o token via 
+`JwtUtil.generateToken()`, retornando `200 OK` com o token no formato `AuthResponse`.
 
 ---
 
