@@ -33,7 +33,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | Security | `JwtUtil` | ✅ Commitado |
 | Security | `UserDetailsServiceImpl` | ✅ Commitado |
 | Security | `JwtAuthenticationFilter` | ✅ Commitado |
-| Security | `SecurityConfig` | ⬜ Não iniciado |
+| Security | `SecurityConfig` | ✅ Commitado |
 | Service | `UserService` | ⬜ Não iniciado |
 | Controller | `AuthController` | ⬜ Não iniciado |
 | Controller | `UserController` | ⬜ Não iniciado |
@@ -213,6 +213,33 @@ o `SecurityConfig`.
 
 **Importante:** esse filtro não decide se uma rota exige autenticação, essa 
 responsabilidade é do `SecurityConfig`. Ele só orquestra a validação e publica o resultado.
+
+### SecurityConfig (Security)
+
+Classe central que orquestra toda a configuração de segurança da aplicação, conectando 
+os componentes (`JwtUtil`, `UserDetailsServiceImpl`, `JwtAuthenticationFilter`) 
+e definindo as regras de acesso.
+
+**Beans expostos:**
+
+- **`passwordEncoder()`**: instância única de `BCryptPasswordEncoder`, compartilhada 
+entre o cadastro (criptografar senha) e o login (comparar senha)
+- **`authenticationProvider()`**: `DaoAuthenticationProvider`, componente que efetivamente 
+busca o usuário (via `UserDetailsServiceImpl`) e compara a senha (via `PasswordEncoder`) 
+durante o login
+- **`authenticationManager()`**: interface de mais alto nível usada pelo `AuthController`, 
+que delega a verificação para o `authenticationProvider()` registrado
+
+**`securityFilterChain(HttpSecurity)` — regras de acesso:**
+
+- `/auth/**` e `/h2-console/**`: liberados sem autenticação
+- Qualquer outra rota: exige autenticação válida
+- Sessão configurada como `STATELESS` (sem sessão HTTP; cada requisição se autentica 
+por conta própria via token, sem o servidor guardar memória de autenticações anteriores)
+- CSRF desabilitado (proteção não aplicável a APIs stateless autenticadas por JWT)
+- Frame options desabilitado (necessário para o H2 Console funcionar em desenvolvimento)
+- `JwtAuthenticationFilter` registrado via `addFilterBefore`, executando antes do filtro 
+padrão de autenticação do Spring Security
 
 ---
 
