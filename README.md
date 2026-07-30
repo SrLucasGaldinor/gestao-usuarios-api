@@ -36,7 +36,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 | Security | `SecurityConfig` | ✅ Commitado |
 | Service | `UserService` | ✅ Commitado |
 | Controller | `AuthController` | ✅ Commitado |
-| Controller | `UserController` | ⬜ Não iniciado |
+| Controller | `UserController` | ✅ Commitado |
 
 ---
 
@@ -285,6 +285,26 @@ desativada"), já que não há risco de segurança em revelar essa informação
 
 Em caso de sucesso, extrai o `UserDetails` autenticado e gera o token via 
 `JwtUtil.generateToken()`, retornando `200 OK` com o token no formato `AuthResponse`.
+
+### UserController (Controller)
+
+Expõe os endpoints de consulta, atualização e desativação de usuários, delegando toda 
+a lógica para `UserService`.
+
+**`GET /users`:** lista usuários ativos.
+
+**`GET /users/{id}`:** busca um usuário pelo ID.
+
+**`GET /users/me`:** retorna os dados do usuário autenticado na requisição atual. Não 
+recebe nenhum parâmetro de identificação explícito (como um ID na URL); em vez disso, 
+recebe um `Authentication` injetado automaticamente pelo Spring, já preenchido pelo 
+`JwtAuthenticationFilter` antes da requisição chegar ao controller. O e-mail do usuário 
+autenticado é obtido via `authentication.getName()` e usado para buscar os dados 
+completos através de `UserService.findByEmail()`.
+
+**`PUT /users/{id}`:** atualiza o nome de um usuário.
+
+**`DELETE /users/{id}`:** realiza a exclusão lógica (soft delete) de um usuário.
 
 ---
 
