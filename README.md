@@ -93,9 +93,20 @@ Content-Type: application/json
 
 Este projeto é coberto por testes manuais documentados e testes automatizados com Cypress, mantidos no repositório [`gestao-usuarios-qa`](#).
 
-- Casos de teste manuais: *(a preencher)*
-- Cobertura de automação: *(a preencher)*
-- Como rodar os testes: *(a preencher)*
+### Testes Unitários
+
+5 testes cobrindo as regras de negócio da camada `UserService`: duplicidade de e-mail 
+e criptografia de senha no cadastro, exclusão lógica (soft delete) e seu comportamento 
+para usuário inexistente, e filtragem de usuários ativos na listagem. Detalhes de cada 
+teste na seção `Testes Unitários` da Documentação Técnica.
+
+```bash
+./mvnw test
+```
+
+### Testes Manuais
+
+*(a preencher)*
 
 ---
 
@@ -305,6 +316,29 @@ completos através de `UserService.findByEmail()`.
 **`PUT /users/{id}`:** atualiza o nome de um usuário.
 
 **`DELETE /users/{id}`:** realiza a exclusão lógica (soft delete) de um usuário.
+
+## Testes Unitários
+
+Cobertura de testes unitários (JUnit 5 + Mockito) para as regras de negócio da camada 
+`UserService`, isolando a lógica de dependências externas (`UserRepository`, 
+`PasswordEncoder`) através de mocks, sem subir o contexto do Spring nem acessar banco 
+de dados real.
+
+**Testes implementados:**
+
+- `register_DeveLancarConflito_QuandoEmailJaExiste`: confirma que o cadastro é 
+bloqueado (`409 CONFLICT`) quando o e-mail já está em uso, e que nenhum registro é 
+salvo nesse caso
+- `register_DeveCriptografarSenhaEsSalvar_QuandoEmailNaoExiste`: confirma que a senha 
+salva é o hash criptografado, nunca a senha em texto puro, e que o usuário nasce ativo
+- `deleteById_DeveMarcarComoInativo_EmVezDeRemover`: confirma que a exclusão lógica 
+marca `ativo = false` e que o método de exclusão real do banco nunca é chamado
+- `deleteById_DeveLancarNotFound_QuandoUsuarioNaoExiste`: confirma o retorno 
+`404 NOT_FOUND` para IDs inexistentes
+- `findAll_DeveRetornarApenasUsuariosAtivos`: confirma que a listagem usa a consulta 
+filtrada por status, não a consulta genérica do repositório
+
+**Como rodar:** `./mvnw test`
 
 ---
 
