@@ -115,8 +115,6 @@ teste na seção `Testes Unitários` da Documentação Técnica.
 
 ### Testes Manuais
 
-### Testes Manuais
-
 9 cenários testados manualmente (Insomnia) para os endpoints de autenticação:
 
 **POST /auth/register:** cadastro válido, e-mail duplicado (409), e-mail inválido, 
