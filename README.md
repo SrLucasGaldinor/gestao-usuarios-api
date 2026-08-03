@@ -75,11 +75,11 @@ A aplicação sobe em `http://localhost:8080`.
 |---|---|---|---|---|
 | POST | /auth/register | Cadastrar usuário | Não | ✅ |
 | POST | /auth/login | Autenticar e receber token | Não | ✅ |
-| GET | /users | Listar usuários | Sim | ⬜ |
-| GET | /users/{id} | Buscar usuário por ID | Sim | ⬜ |
+| GET | /users | Listar usuários | Sim | ✅ |
+| GET | /users/{id} | Buscar usuário por ID | Sim | ✅ |
 | GET | /users/me | Buscar usuário autenticado | Sim | ⬜ |
-| PUT | /users/{id} | Atualizar usuário | Sim | ⬜ |
-| DELETE | /users/{id} | Desativar usuário (soft delete) | Sim | ⬜ |
+| PUT | /users/{id} | Atualizar usuário | Sim | ✅ |
+| DELETE | /users/{id} | Desativar usuário (soft delete) | Sim | ✅ |
 
 ## Exemplos de requisição
 
@@ -115,16 +115,33 @@ teste na seção `Testes Unitários` da Documentação Técnica.
 
 ### Testes Manuais
 
-9 cenários testados manualmente (Insomnia) para os endpoints de autenticação:
+21 casos de teste executados manualmente via Insomnia, cobrindo os cenários positivos 
+e negativos de cada endpoint.
 
-**POST /auth/register:** cadastro válido, e-mail duplicado (409), e-mail inválido, 
-senha em branco e nome ausente (400 nos três últimos casos, via Bean Validation).
+**POST /auth/register (5 casos):** cadastro válido (201); e-mail duplicado (409); 
+e-mail inválido, senha em branco e nome ausente (400, via Bean Validation).
 
-**POST /auth/login:** login válido (200 + token), senha incorreta e e-mail inexistente 
-(401 com mensagem idêntica em ambos os casos, evitando enumeração de usuários), e 
-campos em branco (400, barrado pela validação antes de tentar autenticar).
+**POST /auth/login (4 casos):** login válido (200 + token); senha incorreta e e-mail 
+inexistente (401, com mensagem idêntica nos dois casos, evitando enumeração de 
+usuários); campos em branco (400, barrado pela validação antes de tentar autenticar).
 
-*(continua conforme os testes de /users avançam)*
+**GET /users (2 casos):** listagem com token válido (200, retornando apenas usuários 
+ativos); sem token (403).
+
+**GET /users/{id} (3 casos):** busca por ID existente (200, inclusive para usuários 
+desativados); ID inexistente (404); sem token (403).
+
+**PUT /users/{id} (3 casos):** atualização válida (200); ID inexistente (404); sem 
+token (403).
+
+**DELETE /users/{id} (3 casos):** desativação de usuário existente (204), confirmando 
+que o registro some da listagem geral mas continua acessível por busca direta; ID 
+inexistente (404); sem token (403).
+
+**Observação:** endpoints protegidos sem autenticação retornam `403 Forbidden`, não 
+`401 Unauthorized`. Esse é o comportamento padrão do Spring Security quando não há 
+nenhuma tentativa de autenticação (nem token malformado, nem token ausente) e nenhum 
+`AuthenticationEntryPoint` customizado foi configurado.
 
 ---
 
