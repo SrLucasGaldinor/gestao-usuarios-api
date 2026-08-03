@@ -19,7 +19,7 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 - Spring Data JPA
 - H2 Database (desenvolvimento) / PostgreSQL (migração planejada)
 - Spring Security + JWT
-- Lombok
+- Spring-Dotenv
 
 ---
 
@@ -44,19 +44,28 @@ Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento ba
 
 - Java 21 (Temurin recomendado)
 - Maven (incluso via `mvnw`, não precisa instalar separado)
+- PostgreSQL (rodando localmente, porta padrão 5432)
 - Git
 
 ## Como rodar o projeto
 
+1. Crie um banco de dados PostgreSQL chamado `gestao_usuarios`
+
+2. Clone o repositório e crie um arquivo `.env` na raiz, baseado no `.env.example`:
 ```bash
 git clone https://github.com/SrLucasGaldinor/gestao-usuarios-api.git
 cd gestao-usuarios-api
+cp .env.example .env
+```
+
+3. Preencha o `.env` com suas credenciais reais do PostgreSQL e uma chave JWT forte
+
+4. Rode a aplicação:
+```bash
 ./mvnw spring-boot:run
 ```
 
-A aplicação sobe em `http://localhost:8080`. O H2 Console fica disponível em `http://localhost:8080/h2-console`.
-
-(seção a validar quando a aplicação estiver completa e testada de ponta a ponta)
+A aplicação sobe em `http://localhost:8080`.
 
 ---
 
@@ -344,4 +353,32 @@ filtrada por status, não a consulta genérica do repositório
 
 ## Migração para PostgreSQL
 
-*(preenchido na etapa de migração, planejada para depois da automação de testes com Cypress)*
+O projeto começou usando H2, um banco de dados que existe apenas na memória enquanto 
+a aplicação está rodando e se apaga por completo a cada reinício. Isso é ótimo para 
+desenvolver rápido, mas não reflete como um sistema funciona de verdade. Esta seção 
+documenta a migração para PostgreSQL, um banco real e persistente, aproximando o 
+projeto de um ambiente de produção.
+
+**O que mudou:**
+
+- A dependência do H2 foi substituída pela do PostgreSQL no `pom.xml`
+- A configuração que decide como o banco trata as tabelas (`ddl-auto`) mudou de 
+`create-drop` para `update`. Com H2, a cada reinício da aplicação as tabelas eram 
+apagadas e recriadas do zero, sem problema, já que nada ali precisava ser mantido. 
+Num banco real, isso apagaria os dados dos usuários toda vez que o servidor 
+reiniciasse. `update` faz o banco ajustar sua estrutura sem apagar o que já existe
+- As credenciais de acesso ao banco (usuário e senha) passaram a vir de variáveis de 
+ambiente, em vez de ficarem escritas diretamente no código. Essa é a mesma lógica já 
+aplicada à chave de autenticação (JWT): informações sensíveis não devem ficar expostas 
+no repositório
+- Foi adicionada uma biblioteca (`spring-dotenv`) que lê essas variáveis de um arquivo 
+local (`.env`, nunca enviado ao GitHub) e as disponibiliza automaticamente para a 
+aplicação, sem precisar configurar nada manualmente
+
+**Dificuldade encontrada:** a versão inicial da biblioteca escolhida para ler o `.env` 
+simplesmente não funcionava com a versão do Spring Boot usada neste projeto, sem 
+apresentar nenhum erro visível, ela apenas não fazia nada. A causa: bibliotecas desse 
+tipo às vezes lançam versões diferentes para cada versão principal do Spring Boot, e 
+usar a versão errada não gera aviso, só faz a funcionalidade parecer "quebrada" sem 
+motivo aparente. A solução foi trocar para a versão da biblioteca feita especificamente 
+para a versão do Spring Boot em uso.
