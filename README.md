@@ -73,8 +73,8 @@ A aplicação sobe em `http://localhost:8080`.
 
 | Método | Endpoint | Descrição | Autenticação | Status |
 |---|---|---|---|---|
-| POST | /auth/register | Cadastrar usuário | Não | ⬜ |
-| POST | /auth/login | Autenticar e receber token | Não | ⬜ |
+| POST | /auth/register | Cadastrar usuário | Não | ✅ |
+| POST | /auth/login | Autenticar e receber token | Não | ✅ |
 | GET | /users | Listar usuários | Sim | ⬜ |
 | GET | /users/{id} | Buscar usuário por ID | Sim | ⬜ |
 | GET | /users/me | Buscar usuário autenticado | Sim | ⬜ |
@@ -115,7 +115,18 @@ teste na seção `Testes Unitários` da Documentação Técnica.
 
 ### Testes Manuais
 
-*(a preencher)*
+### Testes Manuais
+
+9 cenários testados manualmente (Insomnia) para os endpoints de autenticação:
+
+**POST /auth/register:** cadastro válido, e-mail duplicado (409), e-mail inválido, 
+senha em branco e nome ausente (400 nos três últimos casos, via Bean Validation).
+
+**POST /auth/login:** login válido (200 + token), senha incorreta e e-mail inexistente 
+(401 com mensagem idêntica em ambos os casos, evitando enumeração de usuários), e 
+campos em branco (400, barrado pela validação antes de tentar autenticar).
+
+*(continua conforme os testes de /users avançam)*
 
 ---
 
