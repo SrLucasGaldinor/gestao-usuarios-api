@@ -77,7 +77,7 @@ A aplicação sobe em `http://localhost:8080`.
 | POST | /auth/login | Autenticar e receber token | Não | ✅ |
 | GET | /users | Listar usuários | Sim | ✅ |
 | GET | /users/{id} | Buscar usuário por ID | Sim | ✅ |
-| GET | /users/me | Buscar usuário autenticado | Sim | ⬜ |
+| GET | /users/me | Buscar usuário autenticado | Sim | ✅ |
 | PUT | /users/{id} | Atualizar usuário | Sim | ✅ |
 | DELETE | /users/{id} | Desativar usuário (soft delete) | Sim | ✅ |
 
@@ -115,7 +115,7 @@ teste na seção `Testes Unitários` da Documentação Técnica.
 
 ### Testes Manuais
 
-21 casos de teste executados manualmente via Insomnia, cobrindo os cenários positivos 
+23 casos de teste executados manualmente via Insomnia, cobrindo os cenários positivos 
 e negativos de cada endpoint.
 
 **POST /auth/register (5 casos):** cadastro válido (201); e-mail duplicado (409); 
@@ -127,6 +127,9 @@ usuários); campos em branco (400, barrado pela validação antes de tentar aute
 
 **GET /users (2 casos):** listagem com token válido (200, retornando apenas usuários 
 ativos); sem token (403).
+
+**GET /users/me (2 casos):** consulta dos próprios dados com token válido (200); 
+sem token (403).
 
 **GET /users/{id} (3 casos):** busca por ID existente (200, inclusive para usuários 
 desativados); ID inexistente (404); sem token (403).
