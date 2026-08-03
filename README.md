@@ -252,12 +252,15 @@ que delega a verificação para o `authenticationProvider()` registrado
 
 **`securityFilterChain(HttpSecurity)` — regras de acesso:**
 
-- `/auth/**` e `/h2-console/**`: liberados sem autenticação
+- `/auth/**`: liberado sem autenticação
+- `/error`: liberado sem autenticação, necessário para que o próprio mecanismo de 
+tratamento de erros do Spring consiga responder corretamente. Sem essa liberação, um 
+redirecionamento interno que o Spring faz ao processar qualquer erro acaba sendo 
+bloqueado pela regra de autenticação, mascarando o status HTTP real da resposta
 - Qualquer outra rota: exige autenticação válida
 - Sessão configurada como `STATELESS` (sem sessão HTTP; cada requisição se autentica 
 por conta própria via token, sem o servidor guardar memória de autenticações anteriores)
 - CSRF desabilitado (proteção não aplicável a APIs stateless autenticadas por JWT)
-- Frame options desabilitado (necessário para o H2 Console funcionar em desenvolvimento)
 - `JwtAuthenticationFilter` registrado via `addFilterBefore`, executando antes do filtro 
 padrão de autenticação do Spring Security
 
