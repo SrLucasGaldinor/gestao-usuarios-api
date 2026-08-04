@@ -4,6 +4,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-brightgreen?logo=springboot&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql&logoColor=white)
 ![JWT](https://img.shields.io/badge/Auth-JWT-black?logo=jsonwebtokens&logoColor=white)
+![Swagger](https://img.shields.io/badge/API-Swagger-85EA2D?logo=swagger&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Completo-success)
 
 Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento backend e servir de base para testes manuais e automatizados (QA).
@@ -49,7 +50,8 @@ cp .env.example .env
 ./mvnw spring-boot:run
 ```
 
-A aplicação sobe em `http://localhost:8080`.
+A aplicação sobe em `http://localhost:8080`. A documentação interativa (Swagger) 
+fica disponível em `http://localhost:8080/swagger-ui.html`.
 
 ---
 
@@ -299,6 +301,23 @@ Expõe os endpoints de consulta, atualização e desativação de usuários, del
 **`PUT /users/{id}`:** atualiza o nome de um usuário.
 
 **`DELETE /users/{id}`:** realiza a exclusão lógica (soft delete) de um usuário.
+
+</details>
+
+<details>
+<summary><strong>📖 OpenApiConfig Swagger (Config)</strong></summary>
+
+Configura a documentação interativa da API via Swagger UI, usando `springdoc-openapi`. 
+A biblioteca gera a documentação automaticamente a partir do código existente 
+(controllers, DTOs), sem necessidade de anotações adicionais nos controllers.
+
+Define um `SecurityScheme` do tipo Bearer/JWT, habilitando o botão **Authorize** na 
+interface do Swagger. Um `SecurityRequirement` global garante que o token informado 
+seja efetivamente enviado em todas as chamadas de teste feitas pela interface, 
+permitindo testar endpoints protegidos diretamente pelo navegador, sem precisar de 
+ferramentas externas como Insomnia ou Postman.
+
+**Acesso:** `http://localhost:8080/swagger-ui.html`
 
 </details>
 
