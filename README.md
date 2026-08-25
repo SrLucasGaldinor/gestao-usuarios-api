@@ -7,11 +7,7 @@
 ![Swagger](https://img.shields.io/badge/API-Swagger-85EA2D?logo=swagger&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Completo-success)
 
-Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento backend e servir de base para testes manuais e automatizados (QA).
-
-## 🔗 Repositório relacionado
-
-- [`gestao-usuarios-qa`](#) — casos de teste manuais e automação com Cypress cobrindo esta API (a ser criado)
+Projeto prático desenvolvido para consolidar conhecimento em desenvolvimento backend, com autenticação JWT e boas práticas de segurança.
 
 ## 🛠️ Tecnologias
 
@@ -110,7 +106,7 @@ Authorization: Bearer eyJhbGciOiJIUzM4NCJ9...
 
 ## 🧪 Testes
 
-Este projeto é coberto por testes manuais documentados e testes automatizados com Cypress, mantidos no repositório [`gestao-usuarios-qa`](#).
+Este projeto é coberto por testes manuais documentados.
 
 ### 🧫 Testes Unitários
 
@@ -305,7 +301,7 @@ Expõe os endpoints de consulta, atualização e desativação de usuários, del
 </details>
 
 <details>
-<summary><strong>📖 OpenApiConfig Swagger (Config)</strong></summary>
+<summary><strong>📖 OpenApiConfig — Swagger (Config)</strong></summary>
 
 Configura a documentação interativa da API via Swagger UI, usando `springdoc-openapi`. 
 A biblioteca gera a documentação automaticamente a partir do código existente 
